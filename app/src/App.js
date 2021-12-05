@@ -15,9 +15,13 @@ const App = () => {
       if (solana) {
         if (solana.isPhantom) {
           console.log('Phantom Wallet found 👻');
+
+          const response = await solana.connect({ onlyIfTrusted: true });
+          console.log(response.publicKey.toString());
+
         }
         else {
-          console.log('Get a Phantom Wallet 👻');
+          console.log('Solana object not found - get a Phantom Wallet 👻');
         }
       }
     } catch (error) {
