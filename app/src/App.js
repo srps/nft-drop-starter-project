@@ -33,7 +33,15 @@ const App = () => {
     }
   };
 
-  const connectToWallet = async () => {}
+  const connectToWallet = async () => {
+    const { solana } = window;
+
+    if (solana) {
+      const response = await solana.connect({ onlyIfTrusted: true });
+      console.log(`Connected with public key: ${response.publicKey.toString()}`);
+      setWalletAddress(response.publicKey.toString());
+    }
+  };
 
   const renderNotConnectedContainer = () => (
     <button
