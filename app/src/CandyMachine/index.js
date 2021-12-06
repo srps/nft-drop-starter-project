@@ -327,7 +327,7 @@ const CandyMachine = ({ walletAddress }) => {
   
       setIsLoadingMints(false);
     },
-    [],
+    [mints],
   ); 
 
   useEffect(() => {
