@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Connection, PublicKey } from "@solana/web3.js";
 import { Program, Provider, web3 } from "@project-serum/anchor";
 import { MintLayout, TOKEN_PROGRAM_ID, Token } from "@solana/spl-token";
@@ -264,9 +264,75 @@ const CandyMachine = ({ walletAddress }) => {
     });
   };
 
+  const getCandyMachineState = useCallback(
+    async () => {
+
+      const provider = getProvider();
+  
+      // Fetch the IDL that contains the metadata for the candy machine program
+      const idl = await Program.fetchIdl(candyMachineProgram, provider);
+  
+      // Create a program instance from the IDL
+      const program = new Program(idl, candyMachineProgram, provider);
+  
+      // Fetch the metadata of the candy machine program
+      const candyMachine = await program.account.candyMachine.fetch(
+        process.env.REACT_APP_CANDY_MACHINE_ID
+      );
+  
+      // Parse the metadata
+      const itemsAvailable = candyMachine.data.itemsAvailable.toNumber();
+      const itemsRedeemed = candyMachine.itemsRedeemed.toNumber();
+      const itemsRemaining = itemsAvailable - itemsRedeemed;
+      const goLiveDate = candyMachine.data.goLiveDate.toNumber();
+  
+      const goLiveDateTimeString = `${new Date(
+        goLiveDate * 1000
+      ).toGMTString()}`
+  
+      setMachineStats({
+        itemsAvailable,
+        itemsRedeemed,
+        itemsRemaining,
+        goLiveDate,
+        goLiveDateTimeString,
+      });
+    
+      console.log({
+        itemsAvailable,
+        itemsRedeemed,
+        itemsRemaining,
+        goLiveDate,
+        goLiveDateTimeString,
+      });
+  
+      setIsLoadingMints(true);
+  
+      const data = await fetchHashTable(
+        process.env.REACT_APP_CANDY_MACHINE_ID,
+        true
+      );
+  
+      if (data.length !== 0) {
+        for (const mint of data) {
+          const response = await fetch(mint.data.uri);
+          const parse = await response.json();
+          console.log(`Past minted NFT: ${mint}`);
+  
+          if (!mints.find((mint) => mint === parse.image)) {
+            setMints((prevState) => [...prevState, parse.image]);
+          }
+        }
+      }
+  
+      setIsLoadingMints(false);
+    },
+    [],
+  ); 
+
   useEffect(() => {
     getCandyMachineState();
-  }, []);
+  }, [getCandyMachineState]);
 
   const getProvider = () => {
     const rpcHost = process.env.REACT_APP_SOLANA_RPC_HOST;
@@ -281,69 +347,6 @@ const CandyMachine = ({ walletAddress }) => {
     );
 
     return provider;
-  };
-
-  const getCandyMachineState = async () => {
-
-    const provider = getProvider();
-
-    // Fetch the IDL that contains the metadata for the candy machine program
-    const idl = await Program.fetchIdl(candyMachineProgram, provider);
-
-    // Create a program instance from the IDL
-    const program = new Program(idl, candyMachineProgram, provider);
-
-    // Fetch the metadata of the candy machine program
-    const candyMachine = await program.account.candyMachine.fetch(
-      process.env.REACT_APP_CANDY_MACHINE_ID
-    );
-
-    // Parse the metadata
-    const itemsAvailable = candyMachine.data.itemsAvailable.toNumber();
-    const itemsRedeemed = candyMachine.itemsRedeemed.toNumber();
-    const itemsRemaining = itemsAvailable - itemsRedeemed;
-    const goLiveDate = candyMachine.data.goLiveDate.toNumber();
-
-    const goLiveDateTimeString = `${new Date(
-      goLiveDate * 1000
-    ).toGMTString()}`
-
-    setMachineStats({
-      itemsAvailable,
-      itemsRedeemed,
-      itemsRemaining,
-      goLiveDate,
-      goLiveDateTimeString,
-    });
-  
-    console.log({
-      itemsAvailable,
-      itemsRedeemed,
-      itemsRemaining,
-      goLiveDate,
-      goLiveDateTimeString,
-    });
-
-    setIsLoadingMints(true);
-
-    const data = await fetchHashTable(
-      process.env.REACT_APP_CANDY_MACHINE_ID,
-      true
-    );
-
-    if (data.length !== 0) {
-      for (const mint of data) {
-        const response = await fetch(mint.data.uri);
-        const parse = await response.json();
-        console.log(`Past minted NFT: ${mint}`);
-
-        if (!mints.find((mint) => mint === parse.image)) {
-          setMints((prevState) => [...prevState, parse.image]);
-        }
-      }
-    }
-
-    setIsLoadingMints(false);
   };
 
   const renderMintedItems = () => {
