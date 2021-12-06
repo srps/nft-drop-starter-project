@@ -1,5 +1,5 @@
 .machine-container {
-  display: flex;
+  display: flexbox;
   flex-direction: column;
 }
 

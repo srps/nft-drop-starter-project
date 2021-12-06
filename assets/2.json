@@ -1,0 +1,38 @@
+{
+  "name": "Bart slingshot NFT",
+  "symbol": "",
+  "image": "2.png",
+  "attributes": [
+    {
+      "trait_type": "web",
+      "value": "yes"
+    },
+    {
+      "trait_type": "mobile",
+      "value": "yes"
+   },
+   {
+      "trait_type": "extension",
+      "value": "yes"
+    }
+  ],
+  "collection": {
+    "name": "Bart slingshot NFT",
+    "family": "Simpsons"
+  },
+  "properties": {
+    "files": [
+      {
+        "uri": "2.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image",
+    "creators": [
+      {
+        "address": "2jLze3fUA7LW4BmQEFyneXWcUCZra4eWJTGqHNWPdwa8",
+        "share": 100
+      }
+    ]
+  }
+}

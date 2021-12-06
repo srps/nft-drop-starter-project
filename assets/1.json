@@ -1,0 +1,38 @@
+{
+  "name": "Homer strangling Bart NFT",
+  "symbol": "",
+  "image": "1.png",
+  "attributes": [
+    {
+      "trait_type": "web",
+      "value": "yes"
+    },
+    {
+      "trait_type": "mobile",
+      "value": "yes"
+   },
+   {
+      "trait_type": "extension",
+      "value": "yes"
+    }
+  ],
+  "collection": {
+    "name": "Homer strangling Bart NFT",
+    "family": "Simpsons"
+  },
+  "properties": {
+    "files": [
+      {
+        "uri": "1.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image",
+    "creators": [
+      {
+        "address": "2jLze3fUA7LW4BmQEFyneXWcUCZra4eWJTGqHNWPdwa8",
+        "share": 100
+      }
+    ]
+  }
+}
